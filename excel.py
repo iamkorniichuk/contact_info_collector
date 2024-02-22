@@ -39,3 +39,10 @@ def join_columns(dataframe, columns, separators=","):
             dataframe[name] = dataframe[name].apply(lambda value: join(value))
 
     return dataframe
+
+
+def explode_json_columns(dataframe, columns):
+    for name in columns:
+        if name in dataframe.columns:
+            dataframe = dataframe.join(pd.json_normalize(dataframe.pop(name)))
+    return dataframe
