@@ -1,3 +1,5 @@
+from regex import split_by_punctuation
+
 import pandas as pd
 import numpy as np
 
@@ -11,11 +13,11 @@ def iter_read_excel_dataframes(path):
         )
 
 
-def split_columns(dataframe, columns, separator=",", is_unique=False):
+def split_columns(dataframe, columns, separators=",", is_unique=False):
     def split(value):
         if value is np.nan:
             return []
-        value = str(value).split(separator)
+        value = split_by_punctuation(str(value), separators)
         if is_unique:
             value = set(value)
         return value
@@ -26,11 +28,11 @@ def split_columns(dataframe, columns, separator=",", is_unique=False):
     return dataframe
 
 
-def join_columns(dataframe, columns, separator=","):
+def join_columns(dataframe, columns, separators=","):
     def join(value):
         if value is np.nan:
             return ""
-        return separator.join(value)
+        return separators.join(value)
 
     for name in columns:
         if name in dataframe.columns:

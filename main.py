@@ -7,13 +7,13 @@ if __name__ == "__main__":
         dataframe = split_columns(
             dataframe,
             ["website"],
-            separator=", ",
+            separator=",",
             is_unique=True,
         )
 
         dataframe = join_columns(
             dataframe,
             ["website"],
-            separator=", ",
+            separator=",",
         )
         dataframe.to_excel(output_path, sheet_name=sheet_name)
