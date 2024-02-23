@@ -19,7 +19,7 @@ def split_columns(dataframe, columns, separators=",", is_unique=False):
             return []
         value = split_by_punctuation(str(value), separators)
         if is_unique:
-            value = set(value)
+            value = list(set(value))
         return value
 
     for name in columns:
