@@ -6,8 +6,18 @@ def split_by_punctuation(string, punctuation=r",.;@#?!&$"):
     return re.split(pattern, string)
 
 
-def capture_until_url_params(string):
-    pattern = r"^(.*?)(?:\?|$)"
+url_until_params = r"^(.*?)(?:\?|$)"
+facebook_page_pattern = (
+    r"(mbasic\.facebook|m\.facebook|facebook|fb)\.(com|me)\/(?:[^\s\/?]+)?(?:\?|\/|$)"
+)
+instagram_page_pattern = r"(instagram\.com\/)(?:[^\s\/?]+)?(?:\?|\/|$)"
+linkedin_page_pattern = r"(linkedin\.com\/company\/)(?:[^\s\/?]+)?(?:\?|\/|$)"
+tiktok_page_pattern = r"(tiktok\.com\/@)(?:[^\s\/?]+)?(?:\?|\/|$)"
+youtube_page_pattern = r"(youtube\.com\/channel\/)(?:[^\s\/?]+)?(?:\?|\/|$)"
+
+
+def capture_all_in_one(string, pattern):
+    pattern = r"({pattern})".format(pattern=pattern)
     results = re.findall(pattern, string)
     if results:
-        return results[0]
+        return results[0][0]

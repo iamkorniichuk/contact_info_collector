@@ -1,4 +1,13 @@
-from regex import split_by_punctuation, capture_until_url_params
+from regex import (
+    split_by_punctuation,
+    capture_all_in_one,
+    url_until_params,
+    facebook_page_pattern,
+    instagram_page_pattern,
+    linkedin_page_pattern,
+    tiktok_page_pattern,
+    youtube_page_pattern,
+)
 
 from bs4 import BeautifulSoup
 import requests
@@ -27,24 +36,42 @@ def check_email_href_condition(value):
         string = value[len(attribute) :]
         emails = split_by_punctuation(string, ",")
         for email in emails:
-            result.append(capture_until_url_params(email))
+            result.append(capture_all_in_one(email, pattern=url_until_params))
     return result
 
 
-def check_facebook_href_condition(value): ...
+def check_facebook_href_condition(value):
+    return capture_all_in_one(value, facebook_page_pattern)
 
 
-def check_instagram_href_condition(value): ...
+def check_instagram_href_condition(value):
+    return capture_all_in_one(value, instagram_page_pattern)
+
+
+def check_linkedin_href_condition(value):
+    return capture_all_in_one(value, linkedin_page_pattern)
+
+
+def check_tiktok_href_condition(value):
+    return capture_all_in_one(value, tiktok_page_pattern)
+
+
+def check_youtube_href_condition(value):
+    return capture_all_in_one(value, youtube_page_pattern)
 
 
 href_conditions = {
     "email": check_email_href_condition,
     "facebook": check_facebook_href_condition,
     "instagram": check_instagram_href_condition,
+    "linkedin": check_linkedin_href_condition,
+    "tiktok": check_tiktok_href_condition,
+    "youtube": check_youtube_href_condition,
 }
 
 
 def scrap_contact_info_by_href(soup, conditions=href_conditions):
+    conditions = conditions.copy()
     contact_info = {}
 
     for a in soup.find_all("a", href=True):
