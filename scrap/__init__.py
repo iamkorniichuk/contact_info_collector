@@ -2,8 +2,10 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 
 
-driver = webdriver.Chrome()
-driver.set_page_load_timeout(10)
+options = webdriver.ChromeOptions()
+options.add_argument("--headless")
+options.add_argument("--blink-settings=imagesEnabled=false")
+driver = webdriver.Chrome(options=options)
 
 
 def url_to_soup(url, safe=True):

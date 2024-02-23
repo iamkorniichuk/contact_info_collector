@@ -4,7 +4,8 @@ from excel import (
     join_columns,
     explode_json_columns,
 )
-from scrap import url_to_soup, scrap_contact_info_by_href
+from scrap import url_to_soup, facebook
+from scrap.conditions import run_conditions
 
 
 def parse_dataframe(dataframe):
@@ -20,10 +21,25 @@ def parse_dataframe(dataframe):
 
 def scrap_dataframe(dataframe):
     def get_contact_info(websites):
-        for url in websites:
-            soup = url_to_soup(url)
-            if soup:
-                return scrap_contact_info_by_href(soup)
+        try:
+            url = websites[0]
+        except IndexError:
+            return {}
+        soup = url_to_soup(url)
+        if soup:
+            contact_info = run_conditions(
+                soup.find_all("a", href=True), lambda x: x["href"]
+            )
+            if "facebook" in contact_info.keys():
+                facebook_soup = url_to_soup(contact_info["facebook"])
+                contact_info.update(
+                    run_conditions(
+                        facebook.scrap_contact_info_spans(facebook_soup),
+                        lambda x: x.text,
+                        to_skip=list(contact_info.keys()),
+                    )
+                )
+            return contact_info
 
     dataframe["contact_info"] = dataframe["website"].apply(get_contact_info)
     dataframe = explode_json_columns(dataframe, ["contact_info"])
@@ -33,7 +49,7 @@ def scrap_dataframe(dataframe):
 def save_dataframe(dataframe, path, sheet_name):
     dataframe = join_columns(
         dataframe,
-        ["website", "email"],
+        ["website"],
         separators=",",
     )
     dataframe.to_excel(path, sheet_name=sheet_name)
