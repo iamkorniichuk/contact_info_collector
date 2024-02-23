@@ -1,18 +1,23 @@
 from bs4 import BeautifulSoup
-import requests
-import urllib3
+from selenium import webdriver
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+driver = webdriver.Chrome()
+driver.set_page_load_timeout(10)
 
 
 def url_to_soup(url, safe=True):
     try:
-        if not url.startswith("http"):
-            url = "https://" + url
-        content = requests.get(
-            url, timeout=2, verify=False, allow_redirects=True
-        ).content
-        return BeautifulSoup(content, "lxml")
+        url = normalize_url(url)
+        driver.get(url)
+
+        return BeautifulSoup(driver.page_source, "html.parser")
     except Exception as e:
         if not safe:
             raise e
+
+
+def normalize_url(url):
+    if not url.startswith("http"):
+        url = "https://" + url
+    return url
