@@ -6,7 +6,7 @@ def split_by_punctuation(string, punctuation=r",.;@#?!&$"):
     return re.split(pattern, string)
 
 
-url_until_params = r"^(.*?)(?:\?|$)"
+email_pattern = r"([A-Za-z0-9]+[._])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
 facebook_page_pattern = (
     r"(mbasic\.facebook|m\.facebook|facebook|fb)\.(com|me)\/(?:[^\s\/?]+)?(?:\?|\/|$)"
 )

@@ -1,7 +1,7 @@
 from regex import (
     split_by_punctuation,
     capture_all_in_one,
-    url_until_params,
+    email_pattern,
     facebook_page_pattern,
     instagram_page_pattern,
     linkedin_page_pattern,
@@ -36,7 +36,7 @@ def check_email_href_condition(value):
         string = value[len(attribute) :]
         emails = split_by_punctuation(string, ",")
         for email in emails:
-            result.append(capture_all_in_one(email, pattern=url_until_params))
+            result.append(capture_all_in_one(email, pattern=email_pattern))
     return result
 
 
